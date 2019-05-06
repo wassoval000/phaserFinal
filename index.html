@@ -1,0 +1,236 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 1</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.16.2/dist/phaser.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.AUTO,
+        scale: {
+            mode: Phaser.Scale.FIT,
+            autoCenter: Phaser.Scale.CENTER_BOTH,
+            width: 800,
+            height: 600
+        },
+        physics: {
+            default: 'arcade',
+            arcade:{
+                gravity:{y: 300},
+                debug: false
+            }
+        },
+        scene: {
+            preload: init,
+            create: rendering,
+            update: update
+        },
+        audio:{
+            disableWebAudio: true
+        }
+    };
+
+    var game = new Phaser.Game(config);
+    var health = 100;
+    var score = 0;
+    var numShoot = 0;
+    var numLaser = 50;
+
+    function init ()
+    {
+        this.load.image('laser', 'assets/laser.png');
+        this.load.image('sky', 'assets/background.jpg');
+        this.load.spritesheet('spaceship', 'assets/spaceship.jfif', {frameWidth: 50, frameHeight: 30});
+        this.load.image('asteroid1', 'assets/asteroid1.png');
+        this.load.image('asteroid2', 'assets/asteroid2.png');
+        this.load.image('asteroid3', 'assets/asteroid3.png');
+        this.load.image('explode', 'assets/explode.jpg');
+    }
+
+    function rendering ()
+    {
+        var sky = this.add.image(400, 180, 'sky').setScale(2.7);
+        this.add.image(400,600, 'sky').setScale(2.7);
+        asteroid1 = this.add.sprite(200, 300, 'asteroid1').setScale(.3);
+        asteroid2 = this.add.sprite(160, 500, 'asteroid2').setScale(.5);
+        asteroid2B = this.add.sprite(500, 420, 'asteroid2').setScale(.5);
+        asteroid3 = this.add.sprite(300, 150, 'asteroid3').setScale(.5);
+        asteroid3B = this.add.sprite(600, 250, 'asteroid3').setScale(.5);
+
+        player = this.physics.add.sprite(400, 600, 'spaceship').setScale(2);
+        player.setCollideWorldBounds(true);
+        laser = this.physics.add.group();
+
+        this.anims.create({
+            key: 'right',
+            frames: this.anims.generateFrameNumbers('spaceship', {start:6, end:11}),
+            frameRate: 10,
+            repeat: 0
+        });
+        this.anims.create({
+            key: 'down',
+            frames: [{key:'spaceship', frame:15}],
+            frameRate: 10,
+            repeat: 0
+        });
+        this.anims.create({
+            key: 'left',
+            frames: this.anims.generateFrameNumbers('spaceship', {start:21, end:35}),
+            frameRate: 10,
+            repeat: 0
+        });
+        this.anims.create({
+            key: 'up',
+            frames: [{key:'spaceship', frame:0}],
+            frameRate: 10,
+            repeat: 0
+        });
+
+        this.physics.add.overlap(laser, asteroid1, shootAsteroid1, null, this);
+        this.physics.add.overlap(laser, asteroid2, shootAsteroid2, null, this);
+        this.physics.add.overlap(laser, asteroid3, shootAsteroid3, null, this);
+        this.physics.add.overlap(player, asteroid1, hitAsteroid1, null, this);
+        this.physics.add.overlap(player, asteroid2, hitAsteroid2, null, this);
+        this.physics.add.overlap(player, asteroid2B, hitAsteroid2B, null, this);
+        this.physics.add.overlap(player, asteroid3, hitAsteroid3, null, this);
+        this.physics.add.overlap(player, asteroid3B, hitAsteroid3B, null, this);
+
+        for(let i = numShoot; i < numLaser; i++){
+            laser.create(player.x, player.y, 'laser').setScale(.05);
+            laser.getChildren()[i].disableBody(true, true);
+            laser.getChildren()[i].setCollideWorldBounds(true);
+        }
+
+        this.cameras.main.on('camerashakestart', function(){
+            explosion = this.add.image(player.x, player.y, 'explode');
+        });
+
+        this.cameras.main.on('camerashakecomplete', function(){
+            explosion.disableBody(true, true);
+        });
+        this.cameras.main.on('cameraflashstart', function(cam, fx, duration){
+            explode.setVisible(true);
+        });
+        this.cameras.main.on('cameraflashcomplete', function(){
+            explode.setVisible(false);
+        });
+
+        function hitAsteroid1(player, asteroid1){
+            health -= 10;
+            if(health == 0){
+                this.physics.pause();
+                this.cameras.main.shake(300);
+                player.disableBody(true, true);
+                asteroid1.disableBody(true, true);
+            }
+        }
+
+        function hitAsteroid2(player, asteroid2){
+            health -= 10;
+            if(health == 0){
+                this.physics.pause();
+                this.cameras.main.shake(300);
+                player.disableBody(true, true);
+                asteroid2.disableBody(true, true);
+            }
+        }
+
+        function hitAsteroid2B(player, asteroid2B){
+            health -= 10;
+            if(health == 0){
+                this.physics.pause();
+                this.cameras.main.shake(300);
+                player.disableBody(true, true);
+                asteroid2.disableBody(true, true);
+            }
+        }
+
+        function hitAsteroid3(player, asteroid3){
+            health -= 10;
+            if(health == 0){
+                this.physics.pause();
+                this.cameras.main.shake(300);
+                player.disableBody(true, true);
+                asteroid3.disableBody(true, true);
+            }
+        }
+
+        function hitAsteroid3B(player, asteroid3B){
+            health -= 10;
+            if(health == 0){
+                this.physics.pause();
+                this.cameras.main.shake(300);
+                player.disableBody(true, true);
+                asteroid3.disableBody(true, true);
+            }
+        }
+
+        function shootAsteroid1(laser, asteroid1){
+            score += 10;
+            laser.getChildren()[numShoot].disableBody(true, true);
+            asteroid1.disableBody(true, true);
+        }
+        function shootAsteroid2(laser, asteroid2){
+            score += 10;
+            laser.getChildren()[numShoot].disableBody(true, true);
+            asteroid2.disableBody(true, true);
+        }
+        function shootAsteroid3(laser, asteroid3){
+            score += 10;
+            laser.getChildren()[numShoot].disableBody(true, true);
+            asteroid3.disableBody(true, true);
+        }
+
+        cursors = this.input.keyboard.createCursorKeys();
+    }
+       
+
+    function update ()
+    {
+
+        if(cursors.left.isDown){
+            player.anims.play('left', true);
+            player.setVelocityX(-30);
+        }
+        else if(cursors.right.isDown){
+            player.anims.play('right', true);
+            player.setVelocityX(30);
+        }
+        else if(cursors.down.isDown){
+            player.anims.play('down', true);
+            player.setVelocityY(30);
+        }
+        else if(cursors.up.isDown){
+            player.anims.play('up', true);
+            player.setVelocityY(-30);
+        }
+        else if(cursors.space.isDown){
+            for(let i = numShoot; i < numLaser; i++){
+                laser.getChildren()[numShoot].disableBody(false, false);
+                laser.getChildren()[numShoot].setVelocityY(-60);
+            }
+            numShoot++;
+            numLaser--;
+        }
+        else{
+            player.setVelocityX(0);
+            player.setVelocityY(0);
+        }
+        
+        
+
+    }
+
+</script>
+
+</body>
+</html>
