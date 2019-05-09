@@ -46,6 +46,9 @@
     var numLaser = 50;
     var scoreText;
     var healthText;
+    var numShootText;
+    var anteNumShoot = 0;
+    var anteNumLaser = 50;
 
     function init ()
     {
@@ -71,6 +74,12 @@
         player = this.physics.add.sprite(400, 600, 'spaceship').setScale(2);
         player.setCollideWorldBounds(true);
         laser = this.physics.add.group();
+
+        for(let i = 0; i < numLaser; i++){
+            laser.create(player.x, player.y, 'laser');
+            laser.getChildren()[i].setScale(.08).disableBody(true, true);
+            laser.getChildren()[i].setCollideWorldBounds(true);
+        }
 
         this.anims.create({
             key: 'right',
@@ -99,6 +108,7 @@
 
         scoreText = this.add.text(16, 30, 'SCORE: 0', {fontSize: '32px', fill:'#FFFFFF'});
         healthText = this.add.text(16, 65, 'HEALTH: 100', {fontSize: '32px', fill:'#FFFFFF'});
+        numShootText = this.add.text(16, 100, numShoot, {fontSize: '32px', fill:'#FFFFFF'});
 
         this.physics.add.overlap(laser, asteroid1, shootAsteroid1, null, this);
         this.physics.add.overlap(laser, asteroid2, shootAsteroid2, null, this);
@@ -205,7 +215,6 @@
 
         cursors = this.input.keyboard.createCursorKeys();
     }
-       
 
     function update ()
     {
@@ -233,12 +242,15 @@
             player.setVelocityY(-50);
         }
         else if(cursors.space.isDown){
-            for(let i = numShoot; i < numLaser; i++){
-                laser.getChildren()[numShoot].disableBody(false, false);
+            numShootText.setText(numShoot); 
+            if(numShoot<50){
+                laser.getChildren()[numShoot].enableBody(true, player.x, player.y, true, true);
                 laser.getChildren()[numShoot].setVelocityY(-60);
+                anteNumShoot++;
+                anteNumLaser--;
             }
-            numShoot++;
-            numLaser--;
+            numShoot = anteNumShoot;
+            numLaser = anteNumLaser;
         }
         else{
             player.setVelocityX(0);
