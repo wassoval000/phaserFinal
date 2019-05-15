@@ -49,7 +49,9 @@
     var numShootText;
     var anteNumShoot = 0;
     var anteNumLaser = 50;
-    var orientation = 'forward';
+    var orientation = 'up';
+    var asteroidNum = 5;
+    var lvl = 2;
 
     function init ()
     {
@@ -66,11 +68,20 @@
     {
         var sky = this.add.image(400, 180, 'sky').setScale(2.7);
         this.add.image(400,600, 'sky').setScale(2.7);
-        asteroid1 = this.physics.add.sprite(200, 300, 'asteroid1').setScale(.3);
-        asteroid2 = this.physics.add.sprite(160, 500, 'asteroid2').setScale(.5);
-        asteroid2B = this.physics.add.sprite(500, 420, 'asteroid2').setScale(.5);
-        asteroid3 = this.physics.add.sprite(300, 150, 'asteroid3').setScale(.5);
-        asteroid3B = this.physics.add.sprite(600, 250, 'asteroid3').setScale(.5);
+        if(lvl==1){
+            asteroid1 = this.physics.add.sprite(150, 300, 'asteroid1').setScale(.3);
+            asteroid2 = this.physics.add.sprite(160, 500, 'asteroid2').setScale(.5);
+            asteroid2B = this.physics.add.sprite(500, 420, 'asteroid2').setScale(.5);
+            asteroid3 = this.physics.add.sprite(300, 150, 'asteroid3').setScale(.5);
+            asteroid3B = this.physics.add.sprite(600, 250, 'asteroid3').setScale(.5);
+        }
+        else if(lvl==2){
+            asteroid1 = this.physics.add.sprite(85, 300, 'asteroid1').setScale(.3);
+            asteroid2 = this.physics.add.sprite(200, 500, 'asteroid2').setScale(.5);
+            asteroid2B = this.physics.add.sprite(500, 420, 'asteroid2').setScale(.5);
+            asteroid3 = this.physics.add.sprite(400, 100, 'asteroid3').setScale(.5);
+            asteroid3B = this.physics.add.sprite(600, 250, 'asteroid3').setScale(.5);
+        }
 
         player = this.physics.add.sprite(400, 600, 'spaceship').setScale(2);
         player.setCollideWorldBounds(true);
@@ -114,6 +125,8 @@
         this.physics.add.overlap(laser.getChildren()[numShoot], asteroid1, shootAsteroid1, null, this);
         this.physics.add.overlap(laser.getChildren()[numShoot], asteroid2, shootAsteroid2, null, this);
         this.physics.add.overlap(laser.getChildren()[numShoot], asteroid3, shootAsteroid3, null, this);
+        this.physics.add.overlap(laser.getChildren()[numShoot], asteroid2B, shootAsteroid2B, null, this);
+        this.physics.add.overlap(laser.getChildren()[numShoot], asteroid3B, shootAsteroid3B, null, this);
         this.physics.add.overlap(player, asteroid1, hitAsteroid1, null, this);
         this.physics.add.overlap(player, asteroid2, hitAsteroid2, null, this);
         this.physics.add.overlap(player, asteroid2B, hitAsteroid2B, null, this);
@@ -142,76 +155,98 @@
 
         function hitAsteroid1(player, asteroid1){
             health -= 10;
+            asteroid1.disableBody(true, true);
             healthText.setText("HEALTH: "+health);
+            asteroidNum--;
             if(health == 0){
                 this.cameras.main.shake(300);
                 player.disableBody(true, true);
-                asteroid1.disableBody(true, true);
                 this.physics.pause();
             }
         }
 
         function hitAsteroid2(player, asteroid2){
             health -= 10;
+            asteroid2.disableBody(true, true);
             healthText.setText("HEALTH: "+health);
+            asteroidNum--;
             if(health == 0){
                 this.cameras.main.shake(300);
                 player.disableBody(true, true);
-                asteroid2.disableBody(true, true);
                 this.physics.pause();
             }
         }
 
         function hitAsteroid2B(player, asteroid2B){
             health -= 10;
+            asteroid2B.disableBody(true, true);
             healthText.setText("HEALTH: "+health);
+            asteroidNum--;
             if(health == 0){
                 this.cameras.main.shake(300);
                 player.disableBody(true, true);
-                asteroid2.disableBody(true, true);
                 this.physics.pause();
             }
         }
 
         function hitAsteroid3(player, asteroid3){
             health -= 10;
+            asteroid3.disableBody(true, true);
             healthText.setText("HEALTH: "+health);
+            asteroidNum--;
             if(health == 0){
                 this.cameras.main.shake(300);
                 player.disableBody(true, true);
-                asteroid3.disableBody(true, true);
                 this.physics.pause();
             }      
         }
 
         function hitAsteroid3B(player, asteroid3B){
             health -= 10;
+            asteroid3B.disableBody(true, true);
             healthText.setText("HEALTH: "+health);
+            asteroidNum--;
             if(health == 0){
                 this.cameras.main.shake(300);
                 player.disableBody(true, true);
-                asteroid3.disableBody(true, true);
                 this.physics.pause();
             }
         }
 
         function shootAsteroid1(laser, asteroid1){
             score += 10;
-            laser.getChildren()[numShoot].disableBody(true, true);
+            laser.disableBody(true, true);
             asteroid1.disableBody(true, true);
             scoreText.setText("SCORES: "+score);
+            asteroidNum--;
         }
         function shootAsteroid2(laser, asteroid2){
             score += 10;
-            laser.getChildren()[numShoot].disableBody(true, true);
+            laser.disableBody(true, true);
             asteroid2.disableBody(true, true);
             scoreText.setText("SCORE: "+score);
+            asteroidNum--;
+        }
+        function shootAsteroid2B(laser, asteroid2){
+            score += 10;
+            laser.disableBody(true, true);
+            asteroid2B.disableBody(true, true);
+            scoreText.setText("SCORE: "+score);
+            asteroidNum--;
         }
         function shootAsteroid3(laser, asteroid3){
             score += 10;
-            laser.getChildren()[numShoot].disableBody(true, true);
+            laser.disableBody(true, true);
             asteroid3.disableBody(true, true);
             scoreText.setText("SCORE: "+score);
+            asteroidNum--;
+        }
+        function shootAsteroid3B(laser, asteroid2){
+            score += 10;
+            laser.disableBody(true, true);
+            asteroid3B.disableBody(true, true);
+            scoreText.setText("SCORE: "+score);
+            asteroidNum--;
         }
 
         cursors = this.input.keyboard.createCursorKeys();
@@ -275,11 +310,32 @@
             laser.getChildren()[numShoot].setVelocityY(-10);
         }
         
-        asteroid1.setVelocityY(-5);
-        asteroid2.setVelocityY(-5);
-        asteroid3.setVelocityY(-5);
-        asteroid2B.setVelocityY(-5);
-        asteroid3B.setVelocityY(-5);
+        if(lvl==1){
+            asteroid1.setVelocityY(-5);
+            asteroid2.setVelocityY(-5);
+            asteroid3.setVelocityY(-5);
+            asteroid2B.setVelocityY(-5);
+            asteroid3B.setVelocityY(-5);
+        }
+        else if(lvl==2){
+            asteroid1.setVelocityY(-5);
+            asteroid2.setVelocityY(-5);
+            asteroid3.setVelocityY(-5);
+            asteroid2B.setVelocityY(-5);
+            asteroid3B.setVelocityY(-5);
+
+            if(asteroid1.x >= 800){
+                asteroid1.setVelocityY(-35);
+            }
+            else if(asteroid1.x <= 400){
+                asteroid1.setVelocityY(35);
+            }
+            else if(){}
+        }
+
+        if(health == 50 || asteroidNum == 0){
+            lvl = 2;
+        }
         
 
     }
