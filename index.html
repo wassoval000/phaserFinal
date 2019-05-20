@@ -52,6 +52,7 @@
     var orientation = 'up';
     var asteroidNum = 5;
     var lvl = 2;
+    var A1D = true;
 
     function init ()
     {
@@ -78,8 +79,8 @@
         else if(lvl==2){
             asteroid1 = this.physics.add.sprite(85, 300, 'asteroid1').setScale(.3);
             asteroid2 = this.physics.add.sprite(200, 500, 'asteroid2').setScale(.5);
-            asteroid2B = this.physics.add.sprite(500, 420, 'asteroid2').setScale(.5);
             asteroid3 = this.physics.add.sprite(400, 100, 'asteroid3').setScale(.5);
+            asteroid2B = this.physics.add.sprite(500, 420, 'asteroid2').setScale(.5);
             asteroid3B = this.physics.add.sprite(600, 250, 'asteroid3').setScale(.5);
         }
 
@@ -255,6 +256,48 @@
     function update ()
     {
 
+        if(asteroid1.y >= 600 || asteroid1.y <= 0){
+            if(asteroid1.y >= 600){asteroid1.y = 575};
+            if(asteroid1.y <= 0){asteroid1.y = 25};
+        }
+        if(asteroid2.y >= 600 || asteroid2.y <= 0){
+            if(asteroid2.y >= 600){asteroid2.y = 575};
+            if(asteroid2.y <= 0){asteroid2.y = 25};
+        }
+        if(asteroid2B.y >= 600 || asteroid2B.y <= 0){
+            if(asteroid2B.y >= 600){asteroid2B.y = 575};
+            if(asteroid2B.y <= 0){asteroid2B.y = 25};
+        }
+        if(asteroid3.y >= 600 || asteroid3.y <= 0){
+            if(asteroid3.y >= 600){asteroid3.y = 575};
+            if(asteroid3.y <= 0){asteroid3.y = 25};
+        }
+        if(asteroid3B.y >= 600 || asteroid3B.y <= 0){
+            if(asteroid3B.y >= 600){asteroid3B.y = 575};
+            if(asteroid3B.y <= 0){asteroid3B.y = 25};
+        }
+
+        if(asteroid1.x >= 800 || asteroid1.x <= 0){
+            if(asteroid1.x >= 800){asteroid1.x = 775};
+            if(asteroid1.x <= 0){asteroid1.x = 25};
+        }
+        if(asteroid2.x >= 800 || asteroid2.x <= 0){
+            if(asteroid2.x >= 800){asteroid2.x = 775};
+            if(asteroid2.x <= 0){asteroid2.x = 25};
+        }
+        if(asteroid2B.x >= 800 || asteroid2B.x <= 0){
+            if(asteroid2B.x >= 800){asteroid2B.x = 775};
+            if(asteroid2B.x <= 0){asteroid2B.x = 25};
+        }
+        if(asteroid3.x >= 800 || asteroid3.x <= 0){
+            if(asteroid3.x >= 800){asteroid3.x = 775};
+            if(asteroid3.x <= 0){asteroid3.x = 25};
+        }
+        if(asteroid3B.x >= 800 || asteroid3B.x <= 0){
+            if(asteroid3B.x >= 800){asteroid3B.x = 775};
+            if(asteroid3B.x <= 0){asteroid3B.x = 25};
+        }
+
         if(cursors.left.isDown){
             if(player.y < 600){
                 player.anims.play('left', true);
@@ -318,23 +361,52 @@
             asteroid3B.setVelocityY(-5);
         }
         else if(lvl==2){
-            asteroid1.setVelocityY(-5);
-            asteroid2.setVelocityY(-5);
-            asteroid3.setVelocityY(-5);
-            asteroid2B.setVelocityY(-5);
-            asteroid3B.setVelocityY(-5);
 
-            if(asteroid1.x >= 800){
-                asteroid1.setVelocityY(-35);
+            if(cursors.left.isDown){
+                asteroid1.setVelocityY(-15);
+                asteroid1.setVelocityX(35);
+                asteroid2.setVelocityY(-20);
+                asteroid2.setVelocityX(5);
+                asteroid2B.setVelocityY(-30);
+                asteroid2B.setVelocityX(65);
+                asteroid3.setVelocityY(-5);
+                asteroid3.setVelocityX(20);
+                asteroid3B.setVelocityY(15);
+                asteroid3B.setVelocityX(40);
             }
-            else if(asteroid1.x <= 400){
-                asteroid1.setVelocityY(35);
+            else if(cursors.right.isDown){
+                asteroid1.setVelocityY(-15);
+                asteroid1.setVelocityX(-35);
+                asteroid2.setVelocityY(-20);
+                asteroid2.setVelocityX(-5);
+                asteroid2B.setVelocityY(-30);
+                asteroid2B.setVelocityX(-55);
+                asteroid3.setVelocityY(-5);
+                asteroid3.setVelocityX(-20);
+                asteroid3B.setVelocityY(15);
+                asteroid3B.setVelocityX(-40);
             }
-            else if(){}
+            else{
+                asteroid1.setVelocityY(-5);
+                asteroid1.setVelocityX(0);
+                asteroid2.setVelocityY(-5);
+                asteroid2.setVelocityX(0);
+                asteroid2B.setVelocityY(-5);
+                asteroid2B.setVelocityX(0);
+                asteroid3.setVelocityY(-5);
+                asteroid3.setVelocityX(0);
+                asteroid3B.setVelocityY(-5);
+                asteroid3B.setVelocityX(0);
+            }
+
+            if(health == 0 || asteroidNum == 0){
+                lvl = 3;
+            }
         }
 
         if(health == 50 || asteroidNum == 0){
             lvl = 2;
+            asteroidNum = 5;
         }
         
 
