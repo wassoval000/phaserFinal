@@ -51,8 +51,10 @@
     var anteNumLaser = 50;
     var orientation = 'up';
     var asteroidNum = 5;
-    var lvl = 2;
+    var lvl = 1;
     var A1D = true;
+    var lvlText;
+    var infoText;
 
     function init ()
     {
@@ -69,12 +71,15 @@
     {
         var sky = this.add.image(400, 180, 'sky').setScale(2.7);
         this.add.image(400,600, 'sky').setScale(2.7);
+        lvlText = this.add.text(16, 135, lvl, {fontSize: '32px', fill:'#FFFFFF'});
         if(lvl==1){
             asteroid1 = this.physics.add.sprite(150, 300, 'asteroid1').setScale(.3);
             asteroid2 = this.physics.add.sprite(160, 500, 'asteroid2').setScale(.5);
             asteroid2B = this.physics.add.sprite(500, 420, 'asteroid2').setScale(.5);
             asteroid3 = this.physics.add.sprite(300, 150, 'asteroid3').setScale(.5);
             asteroid3B = this.physics.add.sprite(600, 250, 'asteroid3').setScale(.5);
+            asteroidNum = 5;
+            lvlText.setText(lvl);
         }
         else if(lvl==2){
             asteroid1 = this.physics.add.sprite(85, 300, 'asteroid1').setScale(.3);
@@ -82,7 +87,20 @@
             asteroid3 = this.physics.add.sprite(400, 100, 'asteroid3').setScale(.5);
             asteroid2B = this.physics.add.sprite(500, 420, 'asteroid2').setScale(.5);
             asteroid3B = this.physics.add.sprite(600, 250, 'asteroid3').setScale(.5);
+            asteroidNum = 5;
+            lvlText.setText(lvl);
         }
+ 
+        else if(lvl==3){
+            asteroid1 = this.physics.add.sprite(85, 300, 'asteroid1').setScale(.3);
+            asteroid2 = this.physics.add.sprite(200, 500, 'asteroid2').setScale(.5);
+            asteroid3 = this.physics.add.sprite(400, 100, 'asteroid3').setScale(.5);
+            asteroid2B = this.physics.add.sprite(500, 420, 'asteroid2').setScale(.5);
+            asteroid3B = this.physics.add.sprite(600, 250, 'asteroid3').setScale(.5);
+            asteroidNum = 5;
+            lvlText.setText(lvl);
+        }
+ 
 
         player = this.physics.add.sprite(400, 600, 'spaceship').setScale(2);
         player.setCollideWorldBounds(true);
@@ -199,7 +217,7 @@
                 this.cameras.main.shake(300);
                 player.disableBody(true, true);
                 this.physics.pause();
-            }      
+            }    
         }
 
         function hitAsteroid3B(player, asteroid3B){
@@ -302,7 +320,7 @@
             if(player.y < 600){
                 player.anims.play('left', true);
                 player.setVelocityX(-50);
-                player.setVelocityY(-10);
+                player.setVelocityY(-5);
                 orientation = 'left';
             }
         }
@@ -310,7 +328,7 @@
             if(player.y < 600){
                 player.anims.play('right', true);
                 player.setVelocityX(50);
-                player.setVelocityY(-10);
+                player.setVelocityY(-5);
                 orientation = 'right';
             }
         }
@@ -398,18 +416,22 @@
                 asteroid3B.setVelocityY(-5);
                 asteroid3B.setVelocityX(0);
             }
-
-            if(health == 0 || asteroidNum == 0){
-                lvl = 3;
-            }
+        }
+        else if(lvl==3){
+            asteroid1.setVelocityY(-5);
+            asteroid2.setVelocityY(-5);
+            asteroid2B.setVelocityY(-5);
+            asteroid3.setVelocityY(-5);
+            asteroid3B.setVelocityY(-5);
         }
 
-        if(health == 50 || asteroidNum == 0){
-            lvl = 2;
-            asteroidNum = 5;
+        if(asteroidNum==0 && health != 0){
+            this.scene.restart({lvl: this.lvl + 1});
+            lvl++;
         }
-        
-
+        else if(health==0){
+            infoText = this.add.text(400, 300, "YOU LOSE! :(", {fontSize: '32px', fill:'#FFFFFF'});
+        }
     }
 
 </script>
