@@ -46,15 +46,12 @@
     var numLaser = 50;
     var scoreText;
     var healthText;
-    var numShootText;
-    var anteNumShoot = 0;
-    var anteNumLaser = 50;
     var orientation = 'up';
     var asteroidNum = 5;
-    var lvl = 1;
+    var lvl = 6;
     var A1D = true;
     var lvlText;
-    var infoText;
+    var timesAlert;
 
     function init ()
     {
@@ -64,15 +61,18 @@
         this.load.image('asteroid1', 'assets/asteroid1.png');
         this.load.image('asteroid2', 'assets/asteroid2.png');
         this.load.image('asteroid3', 'assets/asteroid3.png');
-        this.load.image('explode', 'assets/explode.jpg');
+        this.load.spritesheet('star', 'assets/star.jpg', {frameWidth: 60, frameHeight: 60});
+        this.load.image('shrink', 'assets/shrink.png');
+        this.load.image('speed', 'assets/speed.jfif');
     }
 
     function rendering ()
     {
         var sky = this.add.image(400, 180, 'sky').setScale(2.7);
         this.add.image(400,600, 'sky').setScale(2.7);
-        lvlText = this.add.text(16, 135, lvl, {fontSize: '32px', fill:'#FFFFFF'});
+        lvlText = this.add.text(16, 100, "LVL: " + lvl, {fontSize: '32px', fill:'#FFFFFF'});
         if(lvl==1){
+            timesAlert = 1;
             asteroid1 = this.physics.add.sprite(150, 300, 'asteroid1').setScale(.3);
             asteroid2 = this.physics.add.sprite(160, 500, 'asteroid2').setScale(.5);
             asteroid2B = this.physics.add.sprite(500, 420, 'asteroid2').setScale(.5);
@@ -90,16 +90,56 @@
             asteroidNum = 5;
             lvlText.setText(lvl);
         }
- 
         else if(lvl==3){
+            asteroid1 = this.physics.add.sprite(85, 100, 'asteroid1').setScale(.3);
+            asteroid2 = this.physics.add.sprite(200, 100, 'asteroid2').setScale(.5);
+            asteroid3 = this.physics.add.sprite(400, 100, 'asteroid3').setScale(.5);
+            asteroid2B = this.physics.add.sprite(500, 100, 'asteroid2').setScale(.5);
+            asteroid3B = this.physics.add.sprite(600, 100, 'asteroid3').setScale(.5);
+            asteroidNum = 5;
+            lvlText.setText(lvl);
+        }
+        else if(lvl==4){
+            asteroid1 = this.physics.add.sprite(85, 300, 'asteroid1').setScale(.3);
+            asteroid2 = this.physics.add.sprite(200, 500, 'asteroid2').setScale(.5);
+            asteroid3 = this.physics.add.sprite(350, 390, 'asteroid3').setScale(.5);
+            asteroid2B = this.physics.add.sprite(500, 420, 'asteroid2').setScale(.5);
+            asteroid3B = this.physics.add.sprite(600, 250, 'asteroid3').setScale(.5);
+            star = this.physics.add.sprite(400, 100, 'star').setScale(.5);
+            shrink = this.physics.add.sprite(Phaser.Math.Between(100, 700), Phaser.Math.Between(300, 500), 'shrink').setScale(.2);
+            asteroidNum = 5;
+            lvlText.setText(lvl);
+        }
+        else if(lvl==5){
             asteroid1 = this.physics.add.sprite(85, 300, 'asteroid1').setScale(.3);
             asteroid2 = this.physics.add.sprite(200, 500, 'asteroid2').setScale(.5);
             asteroid3 = this.physics.add.sprite(400, 100, 'asteroid3').setScale(.5);
             asteroid2B = this.physics.add.sprite(500, 420, 'asteroid2').setScale(.5);
             asteroid3B = this.physics.add.sprite(600, 250, 'asteroid3').setScale(.5);
+            star = this.physics.add.sprite(400, 100, 'star').setScale(.5);
+            shrink = this.physics.add.sprite(Phaser.Math.Between(100, 700), Phaser.Math.Between(300, 500), 'shrink').setScale(.2);
             asteroidNum = 5;
             lvlText.setText(lvl);
         }
+        else if(lvl==6){
+            asteroid1 = this.physics.add.sprite(85, 100, 'asteroid1').setScale(.3);
+            asteroid2 = this.physics.add.sprite(200, 100, 'asteroid2').setScale(.5);
+            asteroid3 = this.physics.add.sprite(400, 100, 'asteroid3').setScale(.5);
+            asteroid2B = this.physics.add.sprite(500, 100, 'asteroid2').setScale(.5);
+            asteroid3B = this.physics.add.sprite(600, 100, 'asteroid3').setScale(.5);
+            star = this.physics.add.sprite(400, 100, 'star').setScale(.5);
+            shrink = this.physics.add.sprite(Phaser.Math.Between(100, 700), Phaser.Math.Between(300, 500), 'shrink').setScale(.2);
+            speed = this.physics.add.sprite(Phaser.Math.Between(100, 700), Phaser.Math.Between(300, 500), 'speed').setScale(.2);
+            asteroidNum = 5;
+            lvlText.setText(lvl);
+        }
+
+        this.anims.create({
+            key: 'Q',
+            frames: this.anims.generateFrameNumbers('star', {start: 0, end: 4}),
+            frameRate: 10,
+            repeat: 0
+        });
  
 
         player = this.physics.add.sprite(400, 600, 'spaceship').setScale(2);
@@ -139,7 +179,6 @@
 
         scoreText = this.add.text(16, 30, 'SCORE: 0', {fontSize: '32px', fill:'#FFFFFF'});
         healthText = this.add.text(16, 65, 'HEALTH: 100', {fontSize: '32px', fill:'#FFFFFF'});
-        numShootText = this.add.text(16, 100, numShoot, {fontSize: '32px', fill:'#FFFFFF'});
 
         this.physics.add.overlap(laser.getChildren()[numShoot], asteroid1, shootAsteroid1, null, this);
         this.physics.add.overlap(laser.getChildren()[numShoot], asteroid2, shootAsteroid2, null, this);
@@ -151,6 +190,8 @@
         this.physics.add.overlap(player, asteroid2B, hitAsteroid2B, null, this);
         this.physics.add.overlap(player, asteroid3, hitAsteroid3, null, this);
         this.physics.add.overlap(player, asteroid3B, hitAsteroid3B, null, this);
+        this.physics.add.overlap(player,star,hitStar,null,this);
+        this.physics.add.overlap(player,shrink,hitShrink,null,this);
 
         for(let i = numShoot; i < numLaser; i++){
             laser.create(player.x, player.y, 'laser').setScale(.05);
@@ -158,19 +199,24 @@
             laser.getChildren()[i].setCollideWorldBounds(true);
         }
 
-        this.cameras.main.on('camerashakestart', function(){
-            explosion = this.add.image(player.x, player.y, 'explode');
-        });
+        function hitStar(player, star){
+            star.disableBody(true,true);
+            asteroid1.disableBody(true, true);
+            asteroid2.disableBody(true, true);
+            asteroid2B.disableBody(true, true);
+            asteroid3.disableBody(true, true);
+            asteroid3B.disableBody(true, true);
+            asteroidNum = 0;
+        }
 
-        this.cameras.main.on('camerashakecomplete', function(){
-            explosion.disableBody(true, true);
-        });
-        this.cameras.main.on('cameraflashstart', function(cam, fx, duration){
-            explode.setVisible(true);
-        });
-        this.cameras.main.on('cameraflashcomplete', function(){
-            explode.setVisible(false);
-        });
+        function hitShrink(player, shrink){
+            shrink.disableBody(true, true);
+            asteroid1.setScale(.15);
+            asteroid2.setScale(.25);
+            asteroid2B.setScale(.25);
+            asteroid3.setScale(.25);
+            asteroid3B.setScale(.25);
+        }
 
         function hitAsteroid1(player, asteroid1){
             health -= 10;
@@ -316,6 +362,17 @@
             if(asteroid3B.x <= 0){asteroid3B.x = 25};
         }
 
+        if(lvl==4){
+            star.anims.play('Q', true);
+            asteroid1.setVelocityY(-5);
+            asteroid2.setVelocityY(-5);
+            asteroid2B.setVelocityY(-5);
+            asteroid3.setVelocityY(-5);
+            asteroid3B.setVelocityY(-5);
+            star.setVelocityY(-5);
+            shrink.setVelocityY(-5);
+        }
+
         if(cursors.left.isDown){
             if(player.y < 600){
                 player.anims.play('left', true);
@@ -335,21 +392,18 @@
         else if(cursors.down.isDown){
             player.anims.play('down', true);
             player.setVelocityY(50);
+            player.setVelocityX(0);
             orientation = 'down';
         }
         else if(cursors.up.isDown){
             player.anims.play('up', true);
             player.setVelocityY(-50);
+            player.setVelocityX(0);
             orientation = 'up';
         }
-        else if(cursors.space.isDown){
-            numShootText.setText(numShoot); 
-            if(numShoot<50){
-                laser.getChildren()[numShoot].enableBody(true, player.x, player.y, true, true);
-                laser.getChildren()[numShoot].setCollideWorldBounds(false);
-            }
-            numShoot = anteNumShoot;
-            numLaser = anteNumLaser;
+        else if(cursors.space.isDown){ 
+            laser.getChildren()[numShoot].enableBody(true, player.x, player.y, true, true);
+            laser.getChildren()[numShoot].setCollideWorldBounds(false);
         }
         else{
             player.setVelocityX(0);
@@ -418,11 +472,69 @@
             }
         }
         else if(lvl==3){
-            asteroid1.setVelocityY(-5);
-            asteroid2.setVelocityY(-5);
-            asteroid2B.setVelocityY(-5);
-            asteroid3.setVelocityY(-5);
-            asteroid3B.setVelocityY(-5);
+            asteroid1.setVelocityY(15);
+            asteroid2.setVelocityY(15);
+            asteroid2B.setVelocityY(15);
+            asteroid3.setVelocityY(15);
+            asteroid3B.setVelocityY(15);
+        }
+        else if(lvl==5){
+            if(cursors.left.isDown){
+                asteroid1.setVelocityY(-25);
+                asteroid1.setVelocityX(45);
+                asteroid2.setVelocityY(-30);
+                asteroid2.setVelocityX(15);
+                asteroid2B.setVelocityY(-40);
+                asteroid2B.setVelocityX(75);
+                asteroid3.setVelocityY(-15);
+                asteroid3.setVelocityX(30);
+                asteroid3B.setVelocityY(25);
+                asteroid3B.setVelocityX(50);
+                star.setVelocityY(-5);
+                shrink.setVelocityY(-5);
+                star.anims.play('Q', true);
+            }
+            else if(cursors.right.isDown){
+                asteroid1.setVelocityY(-25);
+                asteroid1.setVelocityX(-45);
+                asteroid2.setVelocityY(-30);
+                asteroid2.setVelocityX(-15);
+                asteroid2B.setVelocityY(-25);
+                asteroid2B.setVelocityX(-65);
+                asteroid3.setVelocityY(-15);
+                asteroid3.setVelocityX(-30);
+                asteroid3B.setVelocityY(25);
+                asteroid3B.setVelocityX(-55);
+                star.setVelocityY(-5);
+                shrink.setVelocityY(-5);
+                star.anims.play('Q', true);
+            }
+            else{
+                asteroid1.setVelocityY(-5);
+                asteroid1.setVelocityX(0);
+                asteroid2.setVelocityY(-5);
+                asteroid2.setVelocityX(0);
+                asteroid2B.setVelocityY(-5);
+                asteroid2B.setVelocityX(0);
+                asteroid3.setVelocityY(-5);
+                asteroid3.setVelocityX(0);
+                asteroid3B.setVelocityY(-5);
+                asteroid3B.setVelocityX(0);
+                star.setVelocityY(-5);
+                shrink.setVelocityY(-5);
+                star.anims.play('Q', true);
+            }
+        }
+        else if(lvl==6){
+            asteroid1.setVelocityY(40);
+            asteroid2.setVelocityY(40);
+            asteroid2B.setVelocityY(40);
+            asteroid3.setVelocityY(40);
+            asteroid3B.setVelocityY(40);
+            star.setVelocityY(-5);
+            shrink.setVelocityY(-5);
+            star.anims.play('Q', true);
+            speed.setVelocityY(-5);
         }
 
         if(asteroidNum==0 && health != 0){
@@ -430,7 +542,10 @@
             lvl++;
         }
         else if(health==0){
-            infoText = this.add.text(400, 300, "YOU LOSE! :(", {fontSize: '32px', fill:'#FFFFFF'});
+            if(timesAlert==1){
+                alert("You lose! :(");
+                timesAlert--;
+            }
         }
     }
 
