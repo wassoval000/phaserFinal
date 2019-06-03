@@ -86,8 +86,7 @@
             star = this.physics.add.sprite(400, 100, 'star').setScale(.5);
             shrink = this.physics.add.sprite(Phaser.Math.Between(100, 700), Phaser.Math.Between(300, 500), 'shrink').setScale(.2);
             speed = this.physics.add.sprite(Phaser.Math.Between(100, 700), Phaser.Math.Between(300, 500), 'speed').setScale(.2);
-            blue1 = this.physics.add.sprite(85, 550, 'blue').setScale(.02);
-            blue2 = this.physics.add.sprite(85, 550, 'blue').setScale(.02);
+            blue = this.physics.add.sprite(85, 550, 'blue').setScale(.02);
             lvlText.setText("LVL: "+lvl);
             star.disableBody(true, true);
             shrink.disableBody(true, true);
